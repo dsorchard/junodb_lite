@@ -9,6 +9,7 @@ import (
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/namespace"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -344,6 +345,38 @@ func (e *EtcdClient) Watch(key string, handler IWatchHandler, opts ...clientv3.O
 		}
 	}()
 	return cancel, nil
+}
+
+// different flavor
+func (e *EtcdClient) WatchEvents(key string, ch chan int) {
+	ctx := context.Background()
+
+	rch := e.client.Watch(ctx, key,
+		clientv3.WithProgressNotify())
+
+	glog.Infof("etcd: Watcher waits for events.")
+	for {
+		select {
+		case entry := <-rch:
+			for _, ev := range entry.Events {
+				val, _ := strconv.Atoi(string(ev.Kv.Value))
+
+				glog.Infof("etcd watch: type=%s key=%q val=%q", ev.Type, ev.Kv.Key, ev.Kv.Value)
+				if ev.Type == clientv3.EventTypeDelete {
+					continue
+				}
+				// Notify subscriber
+				ch <- val
+			}
+		case <-ctx.Done():
+			glog.Info("Cancel")
+			return
+		case <-e.doneCh:
+			close(ch)
+			glog.Infof("etcd: Watcher exits.")
+			return
+		}
+	}
 }
 
 // List of transactional operations
