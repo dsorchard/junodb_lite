@@ -1,7 +1,6 @@
 package cluster
 
 import (
-	"errors"
 	"github.com/golang/glog"
 )
 
@@ -12,12 +11,11 @@ type Cluster struct {
 	RedistZoneId     int  // zone selected for commit one zone.
 }
 
-func (c *Cluster) Read(r IReader) (version uint32, err error) {
-	if r == nil {
-		return 0, errors.New("nil cluster reader")
+func (c *Cluster) IsRedistZone(zoneid int) bool {
+	if !c.RedistSingleZone || (c.RedistZoneId == zoneid) {
+		return true
 	}
-
-	return r.Read(c)
+	return false
 }
 
 func (c *Cluster) PopulateFromConfig() (err error) {

@@ -377,6 +377,3 @@ func (e *Client) WatchEvents(key string, ch chan int) {
 		}
 	}
 }
-
-// List of transactional operations
-type OpList []clientv3.Op

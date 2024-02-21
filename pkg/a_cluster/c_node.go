@@ -1,6 +1,10 @@
 package cluster
 
-import "github.com/golang/glog"
+import (
+	"github.com/golang/glog"
+	"strconv"
+	"strings"
+)
 
 // Node class represent a logic node
 type Node struct {
@@ -44,4 +48,23 @@ func (n *Node) StringToNode(zoneid uint32, nodeid uint32, val string,
 func (n *Node) Log() {
 	glog.Infof("zoneid=%d, nodeid=%d, prim_shards=%#v, second_shards=%#v",
 		n.Zoneid, n.Nodeid, n.PrimaryShards, n.SecondaryShards)
+}
+
+func (n *Node) NodeToString(priSecDelimiter string, shardDelimiter string) string {
+
+	var shards_str []string = make([]string, 2)
+
+	var list []string = make([]string, 0, len(n.PrimaryShards))
+	for _, shardid := range n.PrimaryShards {
+		list = append(list, strconv.Itoa(int(shardid)))
+	}
+	shards_str[0] = strings.Join(list, shardDelimiter)
+
+	list = make([]string, 0, len(n.SecondaryShards))
+	for _, shardid := range n.SecondaryShards {
+		list = append(list, strconv.Itoa(int(shardid)))
+	}
+	shards_str[1] = strings.Join(list, shardDelimiter)
+
+	return strings.Join(shards_str, priSecDelimiter)
 }
