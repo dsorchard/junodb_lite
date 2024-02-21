@@ -5,17 +5,6 @@ import (
 	"github.com/golang/glog"
 )
 
-type IReader interface {
-	// for proxy
-	Read(c *Cluster) (version uint32, err error)
-
-	// for storage server
-	ReadWithRedistInfo(c *Cluster) (version uint32, err error)
-
-	// for cluster manager
-	ReadWithRedistNodeShards(c *Cluster) (err error)
-}
-
 type Cluster struct {
 	Config
 	Zones            []*Zone

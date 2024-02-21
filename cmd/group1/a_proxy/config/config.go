@@ -6,6 +6,7 @@ type Config struct {
 	EtcdEnabled bool
 	Etcd        etcd.Config
 	ClusterName string
+	Outbound    interface{}
 }
 
 var (

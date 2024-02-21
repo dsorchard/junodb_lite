@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/BurntSushi/toml"
 	"github.com/golang/glog"
-	"junodb_lite/cmd/proxy/config"
+	"junodb_lite/cmd/group1/a_proxy/config"
 	"junodb_lite/pkg/a_cluster"
 	"junodb_lite/pkg/b_etcd"
 	"junodb_lite/pkg/io"

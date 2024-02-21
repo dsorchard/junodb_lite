@@ -1,7 +1,7 @@
 package server
 
 import (
-	"junodb_lite/cmd/proxy/config"
+	"junodb_lite/cmd/group1/a_proxy/config"
 	"junodb_lite/pkg/io"
 )
 
