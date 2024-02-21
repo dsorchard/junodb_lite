@@ -1,6 +1,6 @@
 package config
 
-import "junodb_lite/pkg/a_etcd"
+import "junodb_lite/pkg/b_etcd"
 
 type Config struct {
 	EtcdEnabled bool

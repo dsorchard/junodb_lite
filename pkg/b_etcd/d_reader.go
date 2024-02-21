@@ -3,7 +3,7 @@ package etcd
 import (
 	"errors"
 	"github.com/golang/glog"
-	"junodb_lite/pkg/b_cluster"
+	"junodb_lite/pkg/a_cluster"
 	"strconv"
 	"strings"
 )
