@@ -10,8 +10,6 @@ type Cluster struct {
 	Zones            []*Zone
 	RedistSingleZone bool // commit redist one zone only
 	RedistZoneId     int  // zone selected for commit one zone.
-
-	shardMap *cluster.ShardMap
 }
 
 func (c *Cluster) GetShards(zoneid uint32, nodeid uint32) (shards []uint32, err error) {
