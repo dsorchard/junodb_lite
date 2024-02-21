@@ -22,6 +22,10 @@ func (c *Cluster) PopulateFromConfig() (err error) {
 
 }
 
+func (c *Cluster) WriteToCache(cachePath string, cacheName string, version uint32, forRedist bool) (err error) {
+	return err
+}
+
 type IReader interface {
 	// for proxy
 	Read(c *Cluster) (version uint32, err error)

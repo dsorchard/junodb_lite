@@ -20,13 +20,13 @@ func NewEtcdReadWriter(cli *EtcdClient) *ReadWriter {
 	return rw
 }
 
-type EtcdReadStdoutWriter struct {
+type ReadStdoutWriter struct {
 	Reader
 	StdoutWriter
 }
 
-func NewEtcdReadStdoutWriter(cli *EtcdClient, clusterName string) *EtcdReadStdoutWriter {
-	rw := &EtcdReadStdoutWriter{
+func NewEtcdReadStdoutWriter(cli *EtcdClient, clusterName string) *ReadStdoutWriter {
+	rw := &ReadStdoutWriter{
 		Reader: Reader{
 			etcdcli: cli,
 		},
