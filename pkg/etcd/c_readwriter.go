@@ -10,7 +10,7 @@ func NewEtcdReadWriter(cli *Client) *ReadWriter {
 		Reader: Reader{
 			etcdcli: cli,
 		},
-		EtcdWriter: Writer{
+		Writer: Writer{
 			etcdcli: cli,
 		},
 	}
