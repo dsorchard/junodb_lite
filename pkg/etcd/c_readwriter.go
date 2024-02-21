@@ -2,15 +2,15 @@ package etcd
 
 type ReadWriter struct {
 	Reader
-	EtcdWriter
+	Writer
 }
 
-func NewEtcdReadWriter(cli *EtcdClient) *ReadWriter {
+func NewEtcdReadWriter(cli *Client) *ReadWriter {
 	rw := &ReadWriter{
 		Reader: Reader{
 			etcdcli: cli,
 		},
-		EtcdWriter: EtcdWriter{
+		EtcdWriter: Writer{
 			etcdcli: cli,
 		},
 	}
@@ -25,7 +25,7 @@ type ReadStdoutWriter struct {
 	StdoutWriter
 }
 
-func NewEtcdReadStdoutWriter(cli *EtcdClient, clusterName string) *ReadStdoutWriter {
+func NewEtcdReadStdoutWriter(cli *Client, clusterName string) *ReadStdoutWriter {
 	rw := &ReadStdoutWriter{
 		Reader: Reader{
 			etcdcli: cli,

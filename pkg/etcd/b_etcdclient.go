@@ -19,8 +19,7 @@ var (
 	errNotInitialized = errors.New("etcd client not initialized")
 )
 
-// etcd client wrapper
-type EtcdClient struct {
+type Client struct {
 	initOnce  sync.Once
 	config    Config
 	keyPrefix string
@@ -36,7 +35,7 @@ var (
 	setOnce     sync.Once
 )
 
-func NewEtcdClient(cfg *Config, clusterName string) *EtcdClient {
+func NewEtcdClient(cfg *Config, clusterName string) *Client {
 
 	var client *clientv3.Client
 	var err error
@@ -90,7 +89,7 @@ func NewEtcdClient(cfg *Config, clusterName string) *EtcdClient {
 		time.Sleep(time.Duration(backoff) * time.Second)
 	}
 
-	etcdcli := &EtcdClient{
+	etcdcli := &Client{
 		client: client,
 		config: *cfg,
 		doneCh: make(chan struct{}),
@@ -102,7 +101,7 @@ func NewEtcdClient(cfg *Config, clusterName string) *EtcdClient {
 	return etcdcli
 }
 
-func (e *EtcdClient) Close() {
+func (e *Client) Close() {
 	close(e.doneCh)
 
 	if e.client != nil {
@@ -110,11 +109,11 @@ func (e *EtcdClient) Close() {
 	}
 }
 
-func (e *EtcdClient) GetDoneCh() chan struct{} {
+func (e *Client) GetDoneCh() chan struct{} {
 	return e.doneCh
 }
 
-func (e *EtcdClient) GetValue(k string) (value string, err error) {
+func (e *Client) GetValue(k string) (value string, err error) {
 	var resp *clientv3.GetResponse
 	resp, err = e.get(k)
 	if err != nil {
@@ -137,7 +136,7 @@ func (e *EtcdClient) GetValue(k string) (value string, err error) {
 	return
 }
 
-func (e *EtcdClient) get(key string, params ...int) (resp *clientv3.GetResponse, err error) {
+func (e *Client) get(key string, params ...int) (resp *clientv3.GetResponse, err error) {
 	if e.client == nil {
 		err = errNotInitialized
 		return
@@ -172,7 +171,7 @@ func (e *EtcdClient) get(key string, params ...int) (resp *clientv3.GetResponse,
 	return
 }
 
-func (e *EtcdClient) PutValue(key string, val string, params ...int) (err error) {
+func (e *Client) PutValue(key string, val string, params ...int) (err error) {
 	if e.client == nil {
 		err = errNotInitialized
 		return
@@ -218,7 +217,7 @@ func (e *EtcdClient) PutValue(key string, val string, params ...int) (err error)
 }
 
 // Batch operations of delete and put.
-func (e *EtcdClient) PutValuesWithTxn(op []clientv3.Op) (err error) {
+func (e *Client) PutValuesWithTxn(op []clientv3.Op) (err error) {
 	if e.client == nil {
 		err = errNotInitialized
 		return
@@ -279,11 +278,11 @@ func (e *EtcdClient) PutValuesWithTxn(op []clientv3.Op) (err error) {
 	return nil
 }
 
-func (e *EtcdClient) DeleteKey(key string) (err error) {
+func (e *Client) DeleteKey(key string) (err error) {
 	return e.DeleteKeyWithPrefix(key, false)
 }
 
-func (e *EtcdClient) DeleteKeyWithPrefix(key string, isPrefix ...bool) (err error) {
+func (e *Client) DeleteKeyWithPrefix(key string, isPrefix ...bool) (err error) {
 
 	usePrefix := true
 	if len(isPrefix) > 0 && !isPrefix[0] {
@@ -307,7 +306,7 @@ func (e *EtcdClient) DeleteKeyWithPrefix(key string, isPrefix ...bool) (err erro
 	return
 }
 
-func (e *EtcdClient) WatchEvt(key string, ctx context.Context) (ch clientv3.WatchChan, err error) {
+func (e *Client) WatchEvt(key string, ctx context.Context) (ch clientv3.WatchChan, err error) {
 	if e.client == nil {
 		err = errNotInitialized
 		return
@@ -317,7 +316,7 @@ func (e *EtcdClient) WatchEvt(key string, ctx context.Context) (ch clientv3.Watc
 	return
 }
 
-func (e *EtcdClient) Watch(key string, handler IWatchHandler, opts ...clientv3.OpOption) (cancel context.CancelFunc, err error) {
+func (e *Client) Watch(key string, handler IWatchHandler, opts ...clientv3.OpOption) (cancel context.CancelFunc, err error) {
 	if e.client == nil {
 		err = errNotInitialized
 		return
@@ -348,7 +347,7 @@ func (e *EtcdClient) Watch(key string, handler IWatchHandler, opts ...clientv3.O
 }
 
 // different flavor
-func (e *EtcdClient) WatchEvents(key string, ch chan int) {
+func (e *Client) WatchEvents(key string, ch chan int) {
 	ctx := context.Background()
 
 	rch := e.client.Watch(ctx, key,

@@ -10,8 +10,10 @@ import (
 
 // Implements cluster.IReader
 type Reader struct {
-	etcdcli *EtcdClient
+	etcdcli *Client
 }
+
+var _ cluster.IReader = new(Reader)
 
 func (cr *Reader) Read(c *cluster.Cluster) (version uint32, err error) {
 
@@ -58,6 +60,77 @@ func (cr *Reader) Read(c *cluster.Cluster) (version uint32, err error) {
 	}
 
 	return
+}
+
+func (cr *Reader) ReadWithRedistInfo(c *cluster.Cluster) (version uint32, err error) {
+
+	// read nodes from cluster info
+	if version, err = cr.Read(c); err != nil {
+		return
+	}
+
+	//	glog.Infof("initial cluster")
+	//	c.Log()
+
+	// read nodes from redist
+	nc := &cluster.Cluster{
+		Config: cluster.Config{
+			NumZones:  c.NumZones,
+			NumShards: c.NumShards,
+		},
+	}
+
+	nc.ConnInfo = make([][]string, c.NumZones)
+	nc.Zones = make([]*cluster.Zone, c.NumZones)
+	if err = cr.readNodesIpport(nc, TagRedistNodeIpport, 3); err != nil {
+		return
+	}
+
+	if err = cr.readNodesShards(nc, TagRedistNodeShards, 3); err != nil {
+		return
+	}
+
+	if nc.Zones == nil {
+		return
+	}
+
+	// merge nodes from redist to cluster info for storage server
+	for zoneid := 0; zoneid < int(nc.NumZones); zoneid++ {
+		originlen := len(c.ConnInfo[zoneid])
+		if len(nc.ConnInfo[zoneid]) > originlen {
+			c.ConnInfo[zoneid] = append(c.ConnInfo[zoneid], nc.ConnInfo[zoneid][originlen:]...)
+		}
+	}
+
+	forRedist := false
+	for zoneid := 0; zoneid < int(nc.NumZones); zoneid++ {
+		if nc.Zones[zoneid] == nil {
+			continue
+		}
+
+		originlen := len(c.Zones[zoneid].Nodes)
+		if nc.Zones[zoneid] != nil && len(nc.Zones[zoneid].Nodes) > originlen {
+			c.Zones[zoneid].Nodes = append(c.Zones[zoneid].Nodes, nc.Zones[zoneid].Nodes[originlen:]...)
+			c.Zones[zoneid].NumNodes = uint32(len(c.Zones[zoneid].Nodes))
+			forRedist = true
+		}
+	}
+	//	glog.Info("redist cluster")
+	//	nc.Log()
+	glog.Info("cluster info adjusted with new nodes")
+	c.Log()
+
+	err1 := c.WriteToCache(cr.etcdcli.config.CacheDir, cr.etcdcli.config.CacheName,
+		version, forRedist)
+	if err1 != nil {
+		glog.Errorf("failed to write to etcd cache: %s", err1.Error())
+	}
+	return
+}
+
+func (cr *Reader) ReadWithRedistNodeShards(c *cluster.Cluster) (err error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 // tag: either TagNodeIpport or TagRedistNodeIpport

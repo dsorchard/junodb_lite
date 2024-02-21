@@ -2,7 +2,6 @@ package etcd
 
 var chanForProxy chan int
 
-// Watch for version change
 func WatchForProxy() chan int {
 	if chanForProxy != nil {
 		return chanForProxy

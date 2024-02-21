@@ -13,4 +13,6 @@ const (
 	TagPrimSecondaryDelimiter = "|"
 	TagZoneMarkDown           = "zonemarkdown"
 	TagLimitsConfig           = "config_limits"
+	TagRedistNodeIpport       = "redist_node_ipport"
+	TagRedistNodeShards       = "redist_node_shards"
 )

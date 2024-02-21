@@ -1,6 +1,9 @@
 package cluster
 
-import "errors"
+import (
+	"errors"
+	"github.com/golang/glog"
+)
 
 type Cluster struct {
 	Config
@@ -35,4 +38,13 @@ type IReader interface {
 
 	// for cluster manager
 	ReadWithRedistNodeShards(c *Cluster) (err error)
+}
+
+func (c *Cluster) Log() {
+	glog.Infof("num of shards: %d, num of zones: %d", c.NumShards, c.NumZones)
+	glog.Infof("connInfo: %v", c.ConnInfo)
+	for i := uint32(0); i < c.NumZones; i++ {
+		c.Zones[i].Log()
+	}
+	glog.Flush()
 }

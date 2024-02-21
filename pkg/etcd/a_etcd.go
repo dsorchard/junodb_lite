@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	cli  *EtcdClient
+	cli  *Client
 	rw   *ReadWriter
 	once sync.Once
 )
@@ -36,6 +36,6 @@ func GetClsReadWriter() *ReadWriter {
 	return rw
 }
 
-func GetEtcdCli() *EtcdClient {
+func GetEtcdCli() *Client {
 	return cli
 }

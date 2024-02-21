@@ -1,5 +1,7 @@
 package cluster
 
+import "github.com/golang/glog"
+
 // Node class represent a logic node
 type Node struct {
 	Zoneid          uint32
@@ -37,4 +39,9 @@ func (n *Node) initShards(zoneid uint32, numZones uint32, numShards uint32) {
 func (n *Node) StringToNode(zoneid uint32, nodeid uint32, val string,
 	priSecDelimiter string, shardDelimiter string) error {
 	return nil
+}
+
+func (n *Node) Log() {
+	glog.Infof("zoneid=%d, nodeid=%d, prim_shards=%#v, second_shards=%#v",
+		n.Zoneid, n.Nodeid, n.PrimaryShards, n.SecondaryShards)
 }

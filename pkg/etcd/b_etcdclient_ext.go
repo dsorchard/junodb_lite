@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func (e *EtcdClient) GetVersion() (version, algver uint32, err error) {
+func (e *Client) GetVersion() (version, algver uint32, err error) {
 	var str string
 
 	// get version
@@ -44,7 +44,7 @@ func (e *EtcdClient) GetVersion() (version, algver uint32, err error) {
 	return
 }
 
-func (e *EtcdClient) GetUint32(k string) (value uint32, err error) {
+func (e *Client) GetUint32(k string) (value uint32, err error) {
 	var str string
 	str, err = e.GetValue(k)
 	if err != nil {
@@ -61,7 +61,7 @@ func (e *EtcdClient) GetUint32(k string) (value uint32, err error) {
 }
 
 // key is sorted in descending order
-func (e *EtcdClient) getWithPrefix(key string, params ...int) (resp *clientv3.GetResponse, err error) {
+func (e *Client) getWithPrefix(key string, params ...int) (resp *clientv3.GetResponse, err error) {
 	if e.client == nil {
 		err = errNotInitialized
 		return

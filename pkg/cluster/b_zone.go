@@ -70,3 +70,10 @@ func SetMappingAlg(algVersion uint32) {
 func (z *Zone) addOneNode() (err error) {
 	return nil
 }
+
+func (z *Zone) Log() {
+	glog.Infof("zoneid=%d, numNodes=%d", z.Zoneid, z.NumNodes)
+	for i := uint32(0); i < z.NumNodes; i++ {
+		z.Nodes[i].Log()
+	}
+}

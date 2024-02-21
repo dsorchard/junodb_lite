@@ -12,9 +12,9 @@ type BaseWriter struct {
 	kvwriter IKVWriter
 }
 
-type EtcdWriter struct {
+type Writer struct {
 	BaseWriter
-	etcdcli *EtcdClient
+	etcdcli *Client
 }
 
 type StdoutWriter struct {
@@ -22,15 +22,15 @@ type StdoutWriter struct {
 	keyPrefix string
 }
 
-func (w *EtcdWriter) PutValue(key string, value string) (err error) {
+func (w *Writer) PutValue(key string, value string) (err error) {
 	return w.etcdcli.PutValue(key, value)
 }
 
-func (w *EtcdWriter) DeleteKeyWithPrefix(key string, isPrefix bool) (err error) {
+func (w *Writer) DeleteKeyWithPrefix(key string, isPrefix bool) (err error) {
 	return w.etcdcli.DeleteKeyWithPrefix(key, isPrefix)
 }
 
-func (w *EtcdWriter) PutValuesWithTxn(op OpList) (err error) {
+func (w *Writer) PutValuesWithTxn(op OpList) (err error) {
 	return w.etcdcli.PutValuesWithTxn(op)
 }
 
