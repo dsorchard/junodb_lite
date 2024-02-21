@@ -33,11 +33,9 @@ func (n *Node) initShards(zoneid uint32, numZones uint32, numShards uint32) {
 			secondary = append(secondary, k)
 		}
 	}
-
-	// intializing with all shards assigned to the first node in the zone
-	//n.allocate(len(primary), len(secondary))
-	//n.fillPrimary(0, len(primary), primary)
-	//n.fillSecondary(0, len(secondary), secondary)
+	n.allocate(len(primary), len(secondary))
+	n.fillPrimary(0, len(primary), primary)
+	n.fillSecondary(0, len(secondary), secondary)
 }
 
 func (n *Node) StringToNode(zoneid uint32, nodeid uint32, val string,
@@ -67,4 +65,11 @@ func (n *Node) NodeToString(priSecDelimiter string, shardDelimiter string) strin
 	shards_str[1] = strings.Join(list, shardDelimiter)
 
 	return strings.Join(shards_str, priSecDelimiter)
+}
+
+func (n *Node) GetShards() (shards []uint32) {
+	shards = make([]uint32, len(n.PrimaryShards)+len(n.SecondaryShards))
+	copy(shards, n.PrimaryShards)
+	copy(shards[len(n.PrimaryShards):], n.SecondaryShards)
+	return
 }
