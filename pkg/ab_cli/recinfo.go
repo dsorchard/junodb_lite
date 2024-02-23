@@ -2,7 +2,7 @@ package cli
 
 import (
 	"io"
-	proto "junodb_lite/pkg/a_proto"
+	proto "junodb_lite/pkg/ac_proto"
 )
 
 type RecordInfo struct {

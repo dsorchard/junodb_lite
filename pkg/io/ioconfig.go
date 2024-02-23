@@ -1,6 +1,7 @@
 package io
 
 type (
-	OutboundConfig struct {
-	}
+	InboundConfig    struct{}
+	OutboundConfig   struct{}
+	InboundConfigMap map[string]InboundConfig
 )

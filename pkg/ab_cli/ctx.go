@@ -1,6 +1,6 @@
 package cli
 
-import proto "junodb_lite/pkg/a_proto"
+import proto "junodb_lite/pkg/ac_proto"
 
 // GetResponse() != nil and GetError() != nil are mutually exclusive
 type IResponseContext interface {

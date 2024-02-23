@@ -22,8 +22,8 @@ package client
 import (
 	"fmt"
 	"github.com/golang/glog"
-	cli "junodb_lite/pkg/a_cli"
-	proto "junodb_lite/pkg/a_proto"
+	cli "junodb_lite/pkg/ab_cli"
+	proto "junodb_lite/pkg/ac_proto"
 	"junodb_lite/pkg/io"
 	"runtime"
 )

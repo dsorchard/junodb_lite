@@ -1,7 +1,7 @@
 package cli
 
 import (
-	proto "junodb_lite/pkg/a_proto"
+	proto "junodb_lite/pkg/ac_proto"
 	"junodb_lite/pkg/io"
 	"sync"
 	"time"

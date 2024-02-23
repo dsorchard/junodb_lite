@@ -1,6 +1,6 @@
 package client
 
-import proto "junodb_lite/pkg/a_proto"
+import proto "junodb_lite/pkg/ac_proto"
 
 var errorMapping map[proto.OpStatus]error
 
