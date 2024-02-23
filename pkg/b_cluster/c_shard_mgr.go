@@ -1,7 +1,9 @@
 package cluster
 
 import (
+	shard "junodb_lite/pkg/b_shard"
 	"junodb_lite/pkg/y_conn_mgr"
+	util "junodb_lite/pkg/y_util"
 )
 
 var (
@@ -41,4 +43,29 @@ func (p *ShardManager) newAndStartSSProcessor(zoneId int, indexInZone int, enabl
 	proc.SetConnEventHandler(proc)
 	proc.Start()
 	return proc
+}
+
+// Used by admin worker
+func (p *ShardManager) GetProcessorsByKey(key []byte) (shardId shard.ID, procs []*OutboundSSProcessor, err error) {
+	shardId = shard.ID(util.GetPartitionId(key, uint32(p.shardMap.cluster.NumShards)))
+	procs, err = p.GetProcessors(shardId)
+	return
+}
+
+// Used by admin worker
+func (p *ShardManager) GetProcessors(partId shard.ID) ([]*OutboundSSProcessor, error) {
+
+	// for testing connectivity, order does not matter, so always use 1 for now
+	zones, nodes, err := p.shardMap.GetNodes(uint32(partId), 1)
+	if err != nil {
+		return nil, err
+	}
+
+	procs := make([]*OutboundSSProcessor, len(zones))
+	for i := range zones {
+		s := p.processors[int(zones[i])][nodes[i]]
+		procs[i] = s
+	}
+
+	return procs, nil
 }

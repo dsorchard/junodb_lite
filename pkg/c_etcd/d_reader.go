@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/golang/glog"
 	"junodb_lite/pkg/b_cluster"
-	shard "junodb_lite/pkg/c_shard"
+	shard "junodb_lite/pkg/b_shard"
 	"strconv"
 	"strings"
 )
