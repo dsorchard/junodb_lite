@@ -6,8 +6,8 @@ import (
 )
 
 type Config struct {
-	Listener            []y_conn_mgr.ListenerConfig
+	Listener            []io.ListenerConfig
 	ShutdownWaitTime    time.Duration
 	ThrottlingDelayTime time.Duration
-	IO                  y_conn_mgr.InboundConfigMap
+	IO                  io.InboundConfigMap
 }

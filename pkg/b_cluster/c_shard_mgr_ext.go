@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func (p *OutboundSSProcessor) OnConnectSuccess(conn y_conn_mgr.Conn, connector *y_conn_mgr.OutboundConnector, timeTaken time.Duration) {
+func (p *OutboundSSProcessor) OnConnectSuccess(conn io.Conn, connector *io.OutboundConnector, timeTaken time.Duration) {
 
 }
 

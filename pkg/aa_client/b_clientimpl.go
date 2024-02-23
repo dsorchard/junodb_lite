@@ -68,7 +68,7 @@ func New(conf Config) (IClient, error) {
 func NewClient(server string, ns string, app string) (IClient, error) {
 	c := &clientImplT{
 		config: Config{
-			Server:            y_conn_mgr.ServiceEndpoint{Addr: server, SSLEnabled: false},
+			Server:            io.ServiceEndpoint{Addr: server, SSLEnabled: false},
 			Namespace:         ns,
 			Appname:           app,
 			RetryCount:        defaultConfig.RetryCount,

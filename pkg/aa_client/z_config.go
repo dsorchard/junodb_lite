@@ -26,7 +26,7 @@ import (
 )
 
 type Config struct {
-	Server             y_conn_mgr.ServiceEndpoint
+	Server             io.ServiceEndpoint
 	Appname            string
 	Namespace          string
 	RetryCount         int

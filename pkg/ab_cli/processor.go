@@ -23,7 +23,7 @@ var (
 )
 
 type Processor struct {
-	server     y_conn_mgr.ServiceEndpoint
+	server     io.ServiceEndpoint
 	sourceName string
 
 	connectTimeout     time.Duration
@@ -37,7 +37,7 @@ type Processor struct {
 }
 
 func NewProcessor(
-	server y_conn_mgr.ServiceEndpoint,
+	server io.ServiceEndpoint,
 	sourceName string,
 	connectTimeout time.Duration,
 	requestTimeout time.Duration,

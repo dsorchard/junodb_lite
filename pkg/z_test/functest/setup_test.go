@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/BurntSushi/toml"
 	"github.com/golang/glog"
-	"junodb_lite/cmd/group1/a_proxy/config"
+	"junodb_lite/cmd/group1/a_proxy/b_config"
 	"junodb_lite/pkg/b_cluster"
 	"junodb_lite/pkg/c_etcd"
 	"junodb_lite/pkg/y_conn_mgr"
@@ -16,7 +16,7 @@ import (
 )
 
 var testConfig = server.ClusterConfig{
-	ProxyAddress: y_conn_mgr.ServiceEndpoint{
+	ProxyAddress: io.ServiceEndpoint{
 		Addr:       "127.0.0.1:26969",
 		SSLEnabled: false,
 	},

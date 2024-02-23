@@ -4,11 +4,13 @@ import (
 	shard "junodb_lite/pkg/b_shard"
 	"junodb_lite/pkg/y_conn_mgr"
 	util "junodb_lite/pkg/y_util"
+	"sync/atomic"
 )
 
 var (
-	ClusterInfo  [2]Cluster
-	shardMgrPair [2]*ShardManager
+	ClusterInfo   [2]Cluster
+	shardMgrPair  [2]*ShardManager
+	shardMgrIndex int32 = 0
 )
 
 type (
@@ -16,7 +18,7 @@ type (
 		markdownid int32
 	}
 	OutboundSSProcessor struct {
-		y_conn_mgr.OutboundProcessor
+		io.OutboundProcessor
 		zoneId      int
 		indexInZone int
 	}
@@ -24,7 +26,7 @@ type (
 		AlgVersion uint32 // default
 		shardMap   ShardMap
 		connInfo   [][]string
-		ssconfig   *y_conn_mgr.OutboundConfig
+		ssconfig   *io.OutboundConfig
 		processors [][]*OutboundSSProcessor
 	}
 )
@@ -33,13 +35,23 @@ func Initialize(args ...interface{}) (err error) {
 	return nil
 }
 
-func newShardManager(ccfg *Cluster, conf *y_conn_mgr.OutboundConfig, statscfg *StatsConfig, curMgr *ShardManager) (m *ShardManager, err error) {
+func Finalize() {
+	GetShardMgr().Shutdown(nil)
+}
+
+// Return shardmgr that is active.
+func GetShardMgr() *ShardManager {
+	var ix int32 = atomic.LoadInt32(&shardMgrIndex)
+	return shardMgrPair[ix]
+}
+
+func newShardManager(ccfg *Cluster, conf *io.OutboundConfig, statscfg *StatsConfig, curMgr *ShardManager) (m *ShardManager, err error) {
 	return nil, nil
 }
 
 func (p *ShardManager) newAndStartSSProcessor(zoneId int, indexInZone int, enableBounce bool) *OutboundSSProcessor {
 	proc := &OutboundSSProcessor{zoneId: zoneId, indexInZone: indexInZone}
-	proc.Init(y_conn_mgr.ServiceEndpoint{Addr: p.connInfo[zoneId][indexInZone]}, p.ssconfig, enableBounce)
+	proc.Init(io.ServiceEndpoint{Addr: p.connInfo[zoneId][indexInZone]}, p.ssconfig, enableBounce)
 	proc.SetConnEventHandler(proc)
 	proc.Start()
 	return proc
@@ -68,4 +80,8 @@ func (p *ShardManager) GetProcessors(partId shard.ID) ([]*OutboundSSProcessor, e
 	}
 
 	return procs, nil
+}
+
+func (p *ShardManager) Shutdown(curMgr *ShardManager) {
+
 }
