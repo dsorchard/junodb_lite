@@ -157,7 +157,7 @@ func (s *ServerManager) spawnMonitoringChild() {
 
 		// save the cmd for later
 		s.pidMap[cmd.Process.Pid] = ChildInfo{-1, cmd}
-		glog.Verbosef("%s %s", s.cmdPath, strings.Join(args, " "))
+		glog.Infof("%s %s", s.cmdPath, strings.Join(args, " "))
 	}
 }
 

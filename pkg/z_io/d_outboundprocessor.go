@@ -1,4 +1,4 @@
-package io
+package z_io
 
 import (
 	"sync"

@@ -24,7 +24,7 @@ import (
 	"github.com/golang/glog"
 	cli "junodb_lite/pkg/ab_cli"
 	proto "junodb_lite/pkg/ac_proto"
-	"junodb_lite/pkg/io"
+	"junodb_lite/pkg/z_io"
 	"runtime"
 )
 
@@ -68,7 +68,7 @@ func New(conf Config) (IClient, error) {
 func NewClient(server string, ns string, app string) (IClient, error) {
 	c := &clientImplT{
 		config: Config{
-			Server:            io.ServiceEndpoint{Addr: server, SSLEnabled: false},
+			Server:            z_io.ServiceEndpoint{Addr: server, SSLEnabled: false},
 			Namespace:         ns,
 			Appname:           app,
 			RetryCount:        defaultConfig.RetryCount,

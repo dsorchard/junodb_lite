@@ -21,12 +21,12 @@ package client
 
 import (
 	"fmt"
-	"junodb_lite/pkg/io"
+	"junodb_lite/pkg/z_io"
 	"time"
 )
 
 type Config struct {
-	Server             io.ServiceEndpoint
+	Server             z_io.ServiceEndpoint
 	Appname            string
 	Namespace          string
 	RetryCount         int

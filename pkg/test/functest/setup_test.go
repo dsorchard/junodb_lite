@@ -8,15 +8,15 @@ import (
 	"junodb_lite/cmd/group1/a_proxy/config"
 	"junodb_lite/pkg/b_cluster"
 	"junodb_lite/pkg/c_etcd"
-	"junodb_lite/pkg/io"
 	"junodb_lite/pkg/test/server"
+	"junodb_lite/pkg/z_io"
 	"net/http"
 	"os"
 	"testing"
 )
 
 var testConfig = server.ClusterConfig{
-	ProxyAddress: io.ServiceEndpoint{
+	ProxyAddress: z_io.ServiceEndpoint{
 		Addr:       "127.0.0.1:26969",
 		SSLEnabled: false,
 	},
