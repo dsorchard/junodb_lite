@@ -2,7 +2,7 @@ package cli
 
 import (
 	proto "junodb_lite/pkg/ac_proto"
-	"junodb_lite/pkg/z_io"
+	"junodb_lite/pkg/z_conn_mgr"
 	"sync"
 	"time"
 )
@@ -23,7 +23,7 @@ var (
 )
 
 type Processor struct {
-	server     z_io.ServiceEndpoint
+	server     z_conn_mgr.ServiceEndpoint
 	sourceName string
 
 	connectTimeout     time.Duration
@@ -37,7 +37,7 @@ type Processor struct {
 }
 
 func NewProcessor(
-	server z_io.ServiceEndpoint,
+	server z_conn_mgr.ServiceEndpoint,
 	sourceName string,
 	connectTimeout time.Duration,
 	requestTimeout time.Duration,

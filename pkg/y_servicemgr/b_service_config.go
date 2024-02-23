@@ -1,13 +1,13 @@
 package service
 
 import (
-	"junodb_lite/pkg/z_io"
+	"junodb_lite/pkg/z_conn_mgr"
 	"time"
 )
 
 type Config struct {
-	Listener            []z_io.ListenerConfig
+	Listener            []z_conn_mgr.ListenerConfig
 	ShutdownWaitTime    time.Duration
 	ThrottlingDelayTime time.Duration
-	IO                  z_io.InboundConfigMap
+	IO                  z_conn_mgr.InboundConfigMap
 }

@@ -1,4 +1,4 @@
-package z_io
+package z_conn_mgr
 
 import "sync"
 

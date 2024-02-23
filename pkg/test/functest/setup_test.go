@@ -9,14 +9,14 @@ import (
 	"junodb_lite/pkg/b_cluster"
 	"junodb_lite/pkg/c_etcd"
 	"junodb_lite/pkg/test/server"
-	"junodb_lite/pkg/z_io"
+	"junodb_lite/pkg/z_conn_mgr"
 	"net/http"
 	"os"
 	"testing"
 )
 
 var testConfig = server.ClusterConfig{
-	ProxyAddress: z_io.ServiceEndpoint{
+	ProxyAddress: z_conn_mgr.ServiceEndpoint{
 		Addr:       "127.0.0.1:26969",
 		SSLEnabled: false,
 	},
