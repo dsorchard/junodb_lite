@@ -2,16 +2,16 @@ package server
 
 import (
 	"junodb_lite/cmd/group1/a_proxy/config"
-	"junodb_lite/pkg/z_conn_mgr"
+	"junodb_lite/pkg/y_conn_mgr"
 )
 
 type ClusterConfig struct {
-	//ProxyToBeReplicate      z_conn_mgr.ServiceEndpoint
+	//ProxyToBeReplicate      y_conn_mgr.ServiceEndpoint
 	//Proxy                   ServerDef
 	//StorageServer           ServerDef
 	//CAL                     cal.Config
 	//Sec                     sec.Config
-	ProxyAddress z_conn_mgr.ServiceEndpoint
+	ProxyAddress y_conn_mgr.ServiceEndpoint
 	ProxyConfig  *config.Config
 
 	SSdir                   string
