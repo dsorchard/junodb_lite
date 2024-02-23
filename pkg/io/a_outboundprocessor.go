@@ -11,7 +11,6 @@ type (
 		OnConnectError(timeTaken time.Duration, connStr string, err error)
 	}
 
-	//
 	// OutboundProcessor manages a pool of one or more underlying connections
 	// to a downstream server; It also bounces incoming requests when all
 	// connections are down.

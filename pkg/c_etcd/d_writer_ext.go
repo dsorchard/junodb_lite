@@ -2,7 +2,7 @@ package etcd
 
 import (
 	"fmt"
-	cluster "junodb_lite/pkg/a_cluster"
+	cluster "junodb_lite/pkg/b_cluster"
 	"strconv"
 )
 

@@ -3,7 +3,8 @@ package etcd
 import (
 	"errors"
 	"github.com/golang/glog"
-	"junodb_lite/pkg/a_cluster"
+	"junodb_lite/pkg/b_cluster"
+	shard "junodb_lite/pkg/y_shard"
 	"strconv"
 	"strings"
 )
@@ -131,6 +132,34 @@ func (cr *Reader) ReadWithRedistInfo(c *cluster.Cluster) (version uint32, err er
 func (cr *Reader) ReadWithRedistNodeShards(c *cluster.Cluster) (err error) {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (cr *Reader) ReadRedistTargetShards(zone int, node int) (shards shard.Map, err error) {
+	// outgoing shards
+	key := KeyRedistFromNodeByZone(zone)
+	resp, err := cr.etcdcli.getWithPrefix(key)
+	if err != nil {
+		glog.Infof("error reading redist node")
+		return
+	}
+
+	shards = shard.NewMap()
+	for _, ev := range resp.Kvs {
+		changeInfo := strings.Split(string(ev.Value), TagRedistShardMoveSeparator)
+		for _, changeStr := range changeInfo {
+			change := strings.Split(changeStr, TagCompDelimiter)
+			if len(change) < 2 {
+				return nil, errors.New("bad cluster info")
+			}
+			shardid, _ := strconv.Atoi(change[0])
+			nodeid, _ := strconv.Atoi(change[1])
+			if nodeid == node {
+				shards[shard.ID(shardid)] = struct{}{}
+			}
+		}
+	}
+
+	return
 }
 
 // tag: either TagNodeIpport or TagRedistNodeIpport
