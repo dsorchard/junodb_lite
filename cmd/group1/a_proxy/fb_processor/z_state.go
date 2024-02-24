@@ -1,0 +1,41 @@
+package proc
+
+import proto "junodb_lite/pkg/ac_proto"
+
+type OnePhaseRequestAndStats struct {
+	//RequestAndStats
+	//successResponses []ResponseWrapper
+	//errorResponses   []ResponseWrapper
+	//
+	//nextSSIndex           uint32
+	//mostUpdatedOkResponse *ResponseWrapper
+}
+type twoPhaseProcessorState uint8
+
+const (
+	stTwoPhaseProcInit twoPhaseProcessorState = iota
+	stTwoPhaseProcPrepare
+	stTwoPhaseProcCommit
+	stTwoPhaseProcAbort
+)
+
+type CommitRequestAndStats struct {
+	//RequestAndStats
+	opMsg proto.OperationalMessage
+	//noErrResponse           ResponseWrapper
+	ssIndicesOfFailedCommit []uint32
+}
+type RequestAndStats struct {
+	raw                 proto.RawMessage
+	isSet               bool
+	numSent             uint8 //successfully sent
+	numPending          uint8
+	numFailToSend       uint8
+	numFailToSendBusy   uint8 //how much "FailToSend" (numFailToSend) is because of busy
+	numFailToSendNoConn uint8 //how much "FailToSend" (numFailToSend) is because of no available connection
+	numIOError          uint8 //IO Read Error
+	numTimeout          uint8
+	numSuccessResponse  uint8
+	numErrorResponse    uint8
+	funcIsSuccess       func(proto.OpStatus) bool
+}

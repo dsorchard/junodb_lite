@@ -3,9 +3,14 @@ package app
 import (
 	"github.com/golang/glog"
 	config "junodb_lite/cmd/group1/a_proxy/b_config"
+	replication "junodb_lite/cmd/group1/a_proxy/c_replication"
+	watcher "junodb_lite/cmd/group1/a_proxy/d_watcher"
+	stats "junodb_lite/cmd/group1/a_proxy/e_stats"
+	handler "junodb_lite/cmd/group1/a_proxy/fa_handler"
 	cluster "junodb_lite/pkg/b_cluster"
 	etcd "junodb_lite/pkg/c_etcd"
 	initmgr "junodb_lite/pkg/e_initmgr"
+	service "junodb_lite/pkg/g_service_mgr"
 	util "junodb_lite/pkg/y_util"
 	"net"
 	"net/http"
@@ -26,6 +31,17 @@ type (
 		acceptDelayTime time.Duration
 	}
 )
+
+func (l *acceptLimiterT) LimitReached() bool {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (l *acceptLimiterT) Throttle() {
+	if l.acceptDelayTime != 0 {
+		time.Sleep(l.acceptDelayTime)
+	}
+}
 
 func (c *Worker) GetName() string {
 	//TODO implement me
@@ -106,7 +122,7 @@ func (c *Worker) Exec() {
 			var fds []*os.File
 
 			for i := 0; i < numListeners; i++ {
-				if f := os.NewFile(uintptr(3+i), ""); f != nil && util.IsSocket(f) {
+				if f := os.NewFile(uintptr(3+i), ""); f != nil {
 					fds = append(fds, f)
 				} else {
 					glog.Exitf("fd not validate")
@@ -115,9 +131,9 @@ func (c *Worker) Exec() {
 			if httpEnabled {
 				if numInheritedFDs > numListeners+3 {
 					f := os.NewFile(uintptr(numListeners+3), "")
-					if f != nil && util.IsSocket(f) {
+					if f != nil {
 						if httpListener, err := net.FileListener(f); err == nil {
-							shmstats.SetHttpPort(httpListener.Addr().String())
+							//shmstats.SetHttpPort(httpListener.Addr().String())
 							go func() {
 								http.Serve(httpListener, &stats.HttpServerMux)
 							}()
@@ -126,7 +142,7 @@ func (c *Worker) Exec() {
 				}
 			}
 
-			service = handler.NewProxyServiceWithListenFd(&config.Conf, &acceptLimiterT{acceptDelayTime: cfg.Config.ThrottlingDelayTime.Duration}, fds...)
+			service = handler.NewProxyServiceWithListenFd(&config.Conf, &acceptLimiterT{acceptDelayTime: cfg.Config.ThrottlingDelayTime}, fds...)
 		}
 
 	} else {
