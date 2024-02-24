@@ -1,6 +1,19 @@
 package app
 
-import util "junodb_lite/pkg/y_util"
+import (
+	"github.com/golang/glog"
+	stats "junodb_lite/cmd/group1/a_proxy/e_stats"
+	handler "junodb_lite/cmd/group1/a_proxy/fa_handler"
+	config "junodb_lite/cmd/group1/b_storageserv/b_config"
+	storage "junodb_lite/cmd/group1/b_storageserv/c_storage"
+	initmgr "junodb_lite/pkg/e_initmgr"
+	service "junodb_lite/pkg/g_service_mgr"
+	util "junodb_lite/pkg/y_util"
+	"net"
+	"net/http"
+	"os"
+	"strconv"
+)
 
 type Worker struct {
 	CmdStorageCommon
@@ -54,8 +67,73 @@ func (c *Worker) AddDetails(txt string) {
 }
 
 func (c *Worker) Exec() {
-	//TODO implement me
-	panic("implement me")
+	numInheritedFDs := util.GetNumOpenFDs()
+
+	initmgr.Register(config.Initializer, c.optConfigFile)
+	initmgr.Init() //initalize config first as others depend on it
+
+	cfg := config.ServerConfig()
+	if len(c.optListenAddresses) != 0 {
+		cfg.SetListeners(c.optListenAddresses)
+	}
+	if len(c.optHttpMonAddr) != 0 {
+		cfg.HttpMonAddr = c.optHttpMonAddr
+	}
+
+	if _, err := strconv.Atoi(cfg.HttpMonAddr); err == nil {
+		cfg.HttpMonAddr = ":" + cfg.HttpMonAddr
+	}
+
+	initmgr.RegisterWithFuncs(storage.Initialize, storage.Finalize, int(c.optZoneId), int(c.optMachineIndex), int(c.optLRUCacheSize))
+	initmgr.Init()
+
+	patch.Init(&cfg.DbScan) // for namespace migration
+	if cfg.EtcdEnabled {
+		watcher.Init(cfg.ClusterName,
+			uint16(c.optZoneId),
+			uint16(c.optMachineIndex),
+			&(cfg.Etcd),
+			cfg.ShardMapUpdateDelay.Duration,
+			cluster.Version)
+
+		redist.Init(cfg.ClusterName,
+			uint16(c.optZoneId),
+			uint16(c.optMachineIndex),
+			&(cfg.Etcd))
+	}
+
+	reqHandler := handler.NewRequestHandler()
+
+	service, suspend := service.NewService(cfg.Config, reqHandler)
+
+	if len(cfg.HttpMonAddr) != 0 {
+		if c.optIsChild {
+			if numInheritedFDs > 3 {
+				if f := os.NewFile(3, ""); f != nil && util.IsSocket(f) {
+					if httpListener, err := net.FileListener(f); err == nil {
+						go func() {
+							http.Serve(httpListener, &stats.HttpServerMux)
+						}()
+					}
+				}
+			} else {
+				glog.Warningf("no inherited fds")
+			}
+		} else {
+			go func() {
+				glog.Infof("to serve HTTP on %s", cfg.HttpMonAddr)
+				if err := http.ListenAndServe(cfg.HttpMonAddr, &stats.HttpServerMux); err != nil {
+					glog.Warningf("fail to serve HTTP on %s, err: %s", cfg.HttpMonAddr, err)
+				}
+			}()
+		}
+	}
+
+	service.Zoneid = int(c.optZoneId)
+	if cfg.DbWatchEnabled {
+		go compact.Watch(int(c.optZoneId), int(c.optMachineIndex), suspend)
+	}
+	service.Run()
 }
 
 func (c *Worker) PrintUsage() {
