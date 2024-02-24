@@ -1,6 +1,7 @@
 package io
 
 import (
+	"context"
 	"net"
 	"os"
 	"time"
@@ -79,8 +80,8 @@ func (l *Listener) startNewConnector(conn net.Conn) {
 		bufSize = 64000
 	}
 	connector := &Connector{
-		conn:       conn,
-		reader:     util.NewBufioReader(conn, bufSize),
+		conn: conn,
+		//reader:     util.NewBufioReader(conn, bufSize),
 		ctx:        ctx,
 		cancelCtx:  cancel,
 		chResponse: make(chan IResponseContext, l.ioConfig.RespChanSize),
