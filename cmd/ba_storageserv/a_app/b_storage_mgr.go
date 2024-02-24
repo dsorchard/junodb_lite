@@ -3,7 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/golang/glog"
-	config "junodb_lite/cmd/group1/ba_storageserv/b_config"
+	config "junodb_lite/cmd/ba_storageserv/b_config"
 	initmgr "junodb_lite/pkg/e_initmgr"
 	"net"
 	"os"

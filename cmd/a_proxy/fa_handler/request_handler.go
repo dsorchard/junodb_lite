@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/golang/glog"
-	config "junodb_lite/cmd/group1/a_proxy/b_config"
-	proc "junodb_lite/cmd/group1/a_proxy/fb_processor"
+	config "junodb_lite/cmd/a_proxy/b_config"
+	proc "junodb_lite/cmd/a_proxy/fb_processor"
 	proto "junodb_lite/pkg/ac_proto"
 	service "junodb_lite/pkg/g_service_mgr"
 	"junodb_lite/pkg/y_conn_mgr"

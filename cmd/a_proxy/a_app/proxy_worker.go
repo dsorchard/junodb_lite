@@ -2,11 +2,11 @@ package app
 
 import (
 	"github.com/golang/glog"
-	config "junodb_lite/cmd/group1/a_proxy/b_config"
-	replication "junodb_lite/cmd/group1/a_proxy/c_replication"
-	watcher "junodb_lite/cmd/group1/a_proxy/d_watcher"
-	stats "junodb_lite/cmd/group1/a_proxy/e_stats"
-	handler "junodb_lite/cmd/group1/a_proxy/fa_handler"
+	config "junodb_lite/cmd/a_proxy/b_config"
+	replication "junodb_lite/cmd/a_proxy/c_replication"
+	watcher "junodb_lite/cmd/a_proxy/d_watcher"
+	stats "junodb_lite/cmd/a_proxy/e_stats"
+	handler "junodb_lite/cmd/a_proxy/fa_handler"
 	cluster "junodb_lite/pkg/b_cluster"
 	etcd "junodb_lite/pkg/c_etcd"
 	initmgr "junodb_lite/pkg/e_initmgr"

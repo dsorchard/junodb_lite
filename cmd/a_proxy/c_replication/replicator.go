@@ -3,7 +3,7 @@ package replication
 import (
 	"fmt"
 	"github.com/golang/glog"
-	repconfig "junodb_lite/cmd/group1/a_proxy/b_config"
+	repconfig "junodb_lite/cmd/a_proxy/b_config"
 	proto "junodb_lite/pkg/ac_proto"
 	io "junodb_lite/pkg/y_conn_mgr"
 	util "junodb_lite/pkg/y_util"

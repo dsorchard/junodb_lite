@@ -3,7 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/golang/glog"
-	"junodb_lite/cmd/group1/a_proxy/b_config"
+	"junodb_lite/cmd/a_proxy/b_config"
 	initmgr "junodb_lite/pkg/e_initmgr"
 	sec "junodb_lite/pkg/ea_sec"
 	service "junodb_lite/pkg/g_service_mgr"

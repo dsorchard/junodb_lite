@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/golang/glog"
 	"github.com/tecbot/gorocksdb"
-	config "junodb_lite/cmd/group1/bb_dbscanserv/b_config"
+	config "junodb_lite/cmd/bb_dbscanserv/b_config"
 	"strings"
 	"sync"
 	"time"

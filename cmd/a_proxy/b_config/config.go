@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	repconfig "junodb_lite/cmd/group1/a_proxy/c_replication/config"
+	repconfig "junodb_lite/cmd/a_proxy/c_replication/config"
 	"junodb_lite/pkg/c_etcd"
 	initmgr "junodb_lite/pkg/e_initmgr"
 	service "junodb_lite/pkg/g_service_mgr"
