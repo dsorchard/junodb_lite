@@ -33,3 +33,28 @@ func NewRequestProcessorPool(chansize int32, maxsize int32, op proto.OpCode) *Re
 
 	return &ReqProcessorPool{procPool, maxsize}
 }
+func (p *ReqProcessorPool) GetProcessor() IRequestProcessor {
+
+	//// reached absolute max, should reject or queue request
+	//if p.GetCount() >= p.maxCount {
+	//	return nil
+	//}
+	//
+	//if p.curCount != nil {
+	//	p.curCount.Add(1)
+	//}
+	return p.procPool.Get().(IRequestProcessor)
+}
+func (p *ReqProcessorPool) PutProcessor(proc IRequestProcessor) {
+	proc.Init()
+	p.procPool.Put(proc)
+	//if p.curCount != nil {
+	//	p.curCount.Add(-1)
+	//}
+}
+
+func (p *ReqProcessorPool) DecreaseCount() {
+	//if p.curCount != nil {
+	//	p.curCount.Add(-1)
+	//}
+}

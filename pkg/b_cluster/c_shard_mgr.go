@@ -85,3 +85,10 @@ func (p *ShardManager) GetProcessors(partId shard.ID) ([]*OutboundSSProcessor, e
 func (p *ShardManager) Shutdown(curMgr *ShardManager) {
 
 }
+
+// used by request processor
+// the caller's responsibility to make sure
+// cap(procs) >= numZones and cap(pos) >= numZones
+func (p *ShardManager) GetSSProcessors(key []byte, confNumWrites int, procs []*OutboundSSProcessor, pos []int) (shardId shard.ID, numProcs int) {
+	return 0, 0
+}

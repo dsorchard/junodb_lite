@@ -61,3 +61,20 @@ func (m *OperationalMessage) GetOpStatus() OpStatus {
 func (m *OperationalMessage) GetOpCodeText() any {
 	return nil
 }
+
+func (m *OperationalMessage) GetKey() []byte {
+	return m.key
+}
+
+func SetShardId(wmsg *RawMessage, vid uint16) (err error) {
+	//if wmsg.typeFlag.getMessageType() != kOperationalMessageType || len(wmsg.body) < kOpMsgSubHeaderSize {
+	//	err = &ProtocolError{"Not Operational Message"}
+	//	return
+	//}
+	//if wmsg.typeFlag.isResponse() {
+	//	err = &ProtocolError{"try to set vbucket Id for operational response"}
+	//	return
+	//}
+	//EncByteOrder.PutUint16(wmsg.body[offsetShardIdWithinOpbHeader:offsetShardIdWithinOpbHeader+2], vid)
+	return
+}

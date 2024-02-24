@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/golang/glog"
 	io "junodb_lite/pkg/y_conn_mgr"
+	"net"
 	"os"
 	"sync"
 )
@@ -21,7 +22,43 @@ type Service struct {
 }
 
 func (s *Service) Run() {
+	//s.initSignalHandler()
+	s.requestHandler.Init()
+	for _, ln := range s.listeners {
+		s.serve(ln)
+	}
 
+	s.wg.Wait()
+	s.requestHandler.Finish()
+}
+
+func (s *Service) serve(l io.IListener) {
+	s.wg.Add(1)
+	go func() {
+		defer func() {
+
+		}()
+
+		for {
+			err := l.AcceptAndServe()
+			if err != nil {
+				if nerr, ok := err.(net.Error); ok && nerr.Temporary() {
+					//glog.Debug("Temporary accept error: ", err)
+					continue
+				} else {
+					if !s.suspended {
+						// compare error string -- "use of closed network connection" for return ???
+						glog.Warningf("%s accept error: %s", l.GetConnString(), err.Error())
+
+						//if cal.IsEnabled() {
+						//	cal.Event(cal.TxnTypeAccept, "Error", cal.StatusSuccess, []byte(err.Error()))
+						//}
+					}
+					return
+				}
+			}
+		}
+	}()
 }
 
 func NewWithLimiterAndListenFd(cfg Config, reqHandler io.IRequestHandler, limiter ILimiter, fds ...*os.File) (service *Service) {

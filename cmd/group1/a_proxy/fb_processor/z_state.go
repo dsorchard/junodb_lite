@@ -1,6 +1,9 @@
 package proc
 
-import proto "junodb_lite/pkg/ac_proto"
+import (
+	"github.com/golang/glog"
+	proto "junodb_lite/pkg/ac_proto"
+)
 
 type OnePhaseRequestAndStats struct {
 	//RequestAndStats
@@ -10,6 +13,7 @@ type OnePhaseRequestAndStats struct {
 	//nextSSIndex           uint32
 	//mostUpdatedOkResponse *ResponseWrapper
 }
+
 type twoPhaseProcessorState uint8
 
 const (
@@ -38,4 +42,29 @@ type RequestAndStats struct {
 	numSuccessResponse  uint8
 	numErrorResponse    uint8
 	funcIsSuccess       func(proto.OpStatus) bool
+}
+
+func (s *OnePhaseRequestAndStats) onSuccess(rc *SSRequestContext) {
+	switch rc.state {
+	case stSSResponseReceived:
+		//t := &s.successResponses[s.numSuccessResponse]
+		//t.ssRequest = rc
+		//s.onSuccessResponse()
+		//if rc.ssResponse == nil {
+		//	glog.Error("SSRequestContext.ssResponse is nil")
+		//}
+		//if s.mostUpdatedOkResponse == nil {
+		//	s.mostUpdatedOkResponse = t
+		//} else {
+		//	if recordMostUpdatedThan(&t.ssRequest.ssRespOpMsg, &s.mostUpdatedOkResponse.ssRequest.ssRespOpMsg) {
+		//		s.mostUpdatedOkResponse = t
+		//	}
+		//}
+	case stSSRequestIOError, stSSResponseIOError:
+		//s.onIOError()
+	case stSSRequestTimeout:
+		//s.onTimeout()
+	default:
+		glog.Warning("Unexpected rc.state: ", rc.state)
+	}
 }
