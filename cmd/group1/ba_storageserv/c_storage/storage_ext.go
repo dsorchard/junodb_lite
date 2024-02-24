@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"junodb_lite/cmd/group1/b_storageserv/c_storage/db"
-	redist "junodb_lite/cmd/group1/b_storageserv/d_redist"
+	"junodb_lite/cmd/group1/ba_storageserv/c_storage/db"
+	redist "junodb_lite/cmd/group1/ba_storageserv/d_redist"
 	shard "junodb_lite/pkg/b_shard"
 	etcd "junodb_lite/pkg/c_etcd"
 )

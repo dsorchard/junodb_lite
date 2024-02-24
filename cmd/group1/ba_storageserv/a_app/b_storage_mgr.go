@@ -3,7 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/golang/glog"
-	config "junodb_lite/cmd/group1/b_storageserv/b_config"
+	config "junodb_lite/cmd/group1/ba_storageserv/b_config"
 	initmgr "junodb_lite/pkg/e_initmgr"
 	"net"
 	"os"
@@ -120,7 +120,7 @@ func (c *Manager) Exec() {
 		cmdArgs = append(cmdArgs, fmt.Sprintf("-config=%c", c.optConfigFile))
 	}
 	servermgr := NewServerManager(len(connInfo), cfg.PidFileName, os.Args[0], cmdArgs, connInfo,
-		cfg.HttpMonAddr, int(8080), cfg.CloudEnabled)
+		cfg.HttpMonAddr, int(cfg.DbScan.ListenPort), cfg.CloudEnabled)
 	servermgr.Run()
 }
 

@@ -5,7 +5,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/tecbot/gorocksdb"
 	"io"
-	redist "junodb_lite/cmd/group1/b_storageserv/d_redist"
+	redist "junodb_lite/cmd/group1/ba_storageserv/d_redist"
 	shard "junodb_lite/pkg/b_shard"
 	"sync/atomic"
 )

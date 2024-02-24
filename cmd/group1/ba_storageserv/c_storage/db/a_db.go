@@ -2,7 +2,7 @@ package db
 
 import (
 	"io"
-	redist "junodb_lite/cmd/group1/b_storageserv/d_redist"
+	redist "junodb_lite/cmd/group1/ba_storageserv/d_redist"
 	shard "junodb_lite/pkg/b_shard"
 )
 

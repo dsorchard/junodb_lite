@@ -3,8 +3,9 @@ package config
 import (
 	"fmt"
 	"github.com/golang/glog"
-	"junodb_lite/cmd/group1/b_storageserv/c_storage/db"
-	redist "junodb_lite/cmd/group1/b_storageserv/d_redist"
+	"junodb_lite/cmd/group1/ba_storageserv/c_storage/db"
+	redist "junodb_lite/cmd/group1/ba_storageserv/d_redist"
+	config "junodb_lite/cmd/group1/bb_dbscanserv/b_config"
 	cluster "junodb_lite/pkg/b_cluster"
 	shard "junodb_lite/pkg/b_shard"
 	etcd "junodb_lite/pkg/c_etcd"
@@ -44,6 +45,8 @@ type Config struct {
 	Redist              *redist.Config
 	Etcd                etcd.Config
 	ShardMapUpdateDelay time.Duration
+	DbScan              config.DbScan
+
 	//DbScan              dbscan.DbScan
 }
 
