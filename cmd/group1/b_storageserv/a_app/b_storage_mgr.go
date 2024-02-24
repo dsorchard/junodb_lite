@@ -1,14 +1,6 @@
 package app
 
-import cmd "junodb_lite/pkg/d_cmd"
-
 type (
-	CmdStorageCommon struct {
-		cmd.Command
-		optConfigFile string
-		optLogLevel   string
-	}
-
 	Manager struct {
 		CmdStorageCommon
 		optNumChildren uint
