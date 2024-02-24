@@ -5,6 +5,8 @@ import (
 	"github.com/golang/glog"
 	config "junodb_lite/cmd/group1/b_storageserv/b_config"
 	"junodb_lite/cmd/group1/b_storageserv/c_storage/db"
+	redist "junodb_lite/cmd/group1/b_storageserv/d_redist"
+	watcher "junodb_lite/cmd/group1/b_storageserv/e_watcher"
 	shard "junodb_lite/pkg/b_shard"
 	etcd "junodb_lite/pkg/c_etcd"
 	"sync"

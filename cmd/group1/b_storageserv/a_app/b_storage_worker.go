@@ -6,6 +6,9 @@ import (
 	handler "junodb_lite/cmd/group1/a_proxy/fa_handler"
 	config "junodb_lite/cmd/group1/b_storageserv/b_config"
 	storage "junodb_lite/cmd/group1/b_storageserv/c_storage"
+	redist "junodb_lite/cmd/group1/b_storageserv/d_redist"
+	watcher "junodb_lite/cmd/group1/b_storageserv/e_watcher"
+	compact "junodb_lite/cmd/group1/b_storageserv/f_compact"
 	initmgr "junodb_lite/pkg/e_initmgr"
 	service "junodb_lite/pkg/g_service_mgr"
 	util "junodb_lite/pkg/y_util"
@@ -87,14 +90,14 @@ func (c *Worker) Exec() {
 	initmgr.RegisterWithFuncs(storage.Initialize, storage.Finalize, int(c.optZoneId), int(c.optMachineIndex), int(c.optLRUCacheSize))
 	initmgr.Init()
 
-	patch.Init(&cfg.DbScan) // for namespace migration
+	//patch.Init(&cfg.DbScan) // for namespace migration
 	if cfg.EtcdEnabled {
 		watcher.Init(cfg.ClusterName,
 			uint16(c.optZoneId),
 			uint16(c.optMachineIndex),
 			&(cfg.Etcd),
-			cfg.ShardMapUpdateDelay.Duration,
-			cluster.Version)
+			cfg.ShardMapUpdateDelay,
+			1)
 
 		redist.Init(cfg.ClusterName,
 			uint16(c.optZoneId),
@@ -109,7 +112,7 @@ func (c *Worker) Exec() {
 	if len(cfg.HttpMonAddr) != 0 {
 		if c.optIsChild {
 			if numInheritedFDs > 3 {
-				if f := os.NewFile(3, ""); f != nil && util.IsSocket(f) {
+				if f := os.NewFile(3, ""); f != nil {
 					if httpListener, err := net.FileListener(f); err == nil {
 						go func() {
 							http.Serve(httpListener, &stats.HttpServerMux)
