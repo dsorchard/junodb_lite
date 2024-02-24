@@ -13,7 +13,10 @@ type (
 		IOBufSize            int
 		RespChanSize         int
 	}
-	OutboundConfig    struct{}
+	OutboundConfig struct {
+		ReconnectIntervalBase int
+		ConnectTimeout        time.Duration
+	}
 	InboundConfigMap  map[string]InboundConfig
 	OutboundConfigMap map[string]OutboundConfig
 )

@@ -2,6 +2,7 @@ package proc
 
 import (
 	"context"
+	"errors"
 	"github.com/golang/glog"
 	proto "junodb_lite/pkg/ac_proto"
 	cluster "junodb_lite/pkg/b_cluster"
@@ -110,7 +111,6 @@ func (p *ProcessorBase) Process(request io.IRequestContext) bool {
 
 	//p.requestID = p.clientRequest.GetRequestIDString()
 	shardId, ok := p.ssGroup.getProcessors(p.clientRequest.GetKey())
-
 	if !ok {
 		//p.replyStatusToClient(proto.OpStatusNoStorageServer)
 		//glog.Warning("Cannot get channels from Cluster Manager")
@@ -178,4 +178,37 @@ func (p *ProcessorBase) onResponseReceived(resp io.IResponseContext) {
 }
 func (p *ProcessorBase) preprocessAndValidateResponse(resp io.IResponseContext) (st *SSRequestContext) {
 	return
+}
+
+func (p *ProcessorBase) send(request *RequestAndStats, ssIndex uint32) (ok bool) {
+	if err := p.sendMessage(&request.raw, ssIndex); err == nil {
+		//request.onSent()
+		ok = true
+	} else {
+		//request.onFailToSend(err)
+	}
+	return
+}
+func (p *ProcessorBase) sendMessage(msg *proto.RawMessage, ssIndex uint32) error {
+	op, _ := proto.GetOpCode(msg)
+	if p.pendingResponses[ssIndex] != nil {
+		return errors.New("has pending request")
+	}
+
+	st := &p.ssRequestContexts[p.numSSRequestSent]
+	st.timeReqSent = time.Now()
+	st.timeRespReceived = time.Time{}
+	st.opCode = op
+	st.ssResponse = nil
+	st.ssResponseOpStatus = proto.OpStatusNoError
+
+	if err := p.ssGroup.processors[ssIndex].SendRequest(st.ssRequest); err == nil {
+		st.state = stSSRequestSent
+		p.pendingResponses[ssIndex] = st
+		p.pendingResponseQueue = append(p.pendingResponseQueue, st)
+		p.numSSRequestSent++
+	} else {
+		return err
+	}
+	return nil
 }

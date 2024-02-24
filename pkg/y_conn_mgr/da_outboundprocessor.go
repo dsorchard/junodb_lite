@@ -1,6 +1,8 @@
 package io
 
 import (
+	"errors"
+	util "junodb_lite/pkg/y_util"
 	"sync"
 	"time"
 )
@@ -24,6 +26,8 @@ type (
 		doneCh     chan struct{}
 		connCh     chan *OutboundConnector
 		reqCh      chan IRequestContext
+		config     *OutboundConfig
+		connInfo   ServiceEndpoint
 	}
 )
 
@@ -58,4 +62,44 @@ func (p *OutboundProcessor) WaitShutdown() {
 	p.wg.Wait()
 	close(p.connCh)
 	close(p.reqCh)
+}
+
+func (p *OutboundProcessor) SendRequest(req IRequestContext) (err error) {
+	return p.sendRequest(req)
+}
+func (p *OutboundProcessor) sendRequest(req IRequestContext) (err error) {
+	// send request
+	select {
+	case p.reqCh <- req:
+	default:
+		return errors.New("busy")
+	}
+	return nil
+}
+func (p *OutboundProcessor) connect(connCh chan *OutboundConnector, id int, connector *OutboundConnector) {
+
+	interval := p.config.ReconnectIntervalBase
+	timer := util.NewTimerWrapper(time.Duration(interval) * time.Millisecond)
+
+	for {
+		if p.shutdown {
+			return
+		}
+
+		select {
+		case <-p.doneCh:
+			return
+
+		case now := <-timer.GetTimeoutCh():
+			conn, err := ConnectTo(&p.connInfo, p.config.ConnectTimeout)
+			timeTaken := time.Since(now)
+			if err == nil {
+				connector = NewOutboundConnector(id, conn.GetNetConn(), p.reqCh, nil, p.config)
+				if p.connEvHdlr != nil {
+					p.connEvHdlr.OnConnectSuccess(conn, connector, timeTaken)
+				}
+
+			}
+		}
+	}
 }

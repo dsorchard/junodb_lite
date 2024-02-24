@@ -1,6 +1,9 @@
 package io
 
-import "net"
+import (
+	"net"
+	"time"
+)
 
 type Conn interface {
 	GetStateString() string
@@ -9,4 +12,8 @@ type Conn interface {
 	DidResume() string
 	GetNetConn() net.Conn
 	IsTLS() bool
+}
+
+func ConnectTo(endpoint *ServiceEndpoint, connectTimeout time.Duration) (conn Conn, err error) {
+	return nil, nil
 }

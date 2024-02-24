@@ -6,6 +6,8 @@ import (
 )
 
 type OnePhaseRequestAndStats struct {
+	nextSSIndex int
+
 	//RequestAndStats
 	//successResponses []ResponseWrapper
 	//errorResponses   []ResponseWrapper
@@ -13,15 +15,6 @@ type OnePhaseRequestAndStats struct {
 	//nextSSIndex           uint32
 	//mostUpdatedOkResponse *ResponseWrapper
 }
-
-type twoPhaseProcessorState uint8
-
-const (
-	stTwoPhaseProcInit twoPhaseProcessorState = iota
-	stTwoPhaseProcPrepare
-	stTwoPhaseProcCommit
-	stTwoPhaseProcAbort
-)
 
 type CommitRequestAndStats struct {
 	//RequestAndStats
