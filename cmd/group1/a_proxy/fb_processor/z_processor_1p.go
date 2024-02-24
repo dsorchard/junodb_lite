@@ -18,6 +18,14 @@ type (
 		request         OnePhaseRequestAndStats
 		ssRequestOpCode proto.OpCode
 	}
+	OnePhaseRequestAndStats struct {
+		RequestAndStats
+		//successResponses []ResponseWrapper
+		//errorResponses   []ResponseWrapper
+
+		nextSSIndex uint32
+		//mostUpdatedOkResponse *ResponseWrapper
+	}
 )
 
 func (p *OnePhaseProcessor) onSuccess(rc *SSRequestContext) {

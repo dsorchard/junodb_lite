@@ -5,17 +5,6 @@ import (
 	proto "junodb_lite/pkg/ac_proto"
 )
 
-type OnePhaseRequestAndStats struct {
-	nextSSIndex int
-
-	//RequestAndStats
-	//successResponses []ResponseWrapper
-	//errorResponses   []ResponseWrapper
-	//
-	//nextSSIndex           uint32
-	//mostUpdatedOkResponse *ResponseWrapper
-}
-
 type CommitRequestAndStats struct {
 	//RequestAndStats
 	opMsg proto.OperationalMessage
