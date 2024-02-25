@@ -103,3 +103,15 @@ func (p *OutboundProcessor) connect(connCh chan *OutboundConnector, id int, conn
 		}
 	}
 }
+
+func NewOutboundProcessor(connInfo string, config *OutboundConfig, enableBounce bool) *OutboundProcessor {
+	return NewOutbProcessor(ServiceEndpoint{Addr: connInfo}, config, enableBounce)
+}
+
+func NewOutbProcessor(endpoint ServiceEndpoint, config *OutboundConfig, enableBounce bool) (p *OutboundProcessor) {
+	p = &OutboundProcessor{}
+	p.Init(endpoint, config, enableBounce)
+
+	p.Start()
+	return p
+}

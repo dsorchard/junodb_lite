@@ -86,3 +86,7 @@ func KeyRedistEnable(zone int) string {
 func KeyRedistFromNodeByZone(zone int) string {
 	return Key(TagRedistFromNode, zone)
 }
+
+func KeyRedistNodeState(zone int, node int, shardid int) string {
+	return Key(TagRedistStatePrefix, zone, node, shardid)
+}
