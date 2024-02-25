@@ -104,7 +104,7 @@ func (m *Manager) Start() {
 					continue
 				} else if status == redistst.StatsAbort {
 					// resume from next mshard id
-					rb.RestoretSnapShotState(st)
+					rb.RestoreSnapShotState(st)
 					mshardid = st.GetMShardId()
 					if mshardid != 0 {
 						mshardid++

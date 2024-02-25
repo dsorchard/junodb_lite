@@ -104,6 +104,10 @@ func (p *OutboundProcessor) connect(connCh chan *OutboundConnector, id int, conn
 	}
 }
 
+func (p *OutboundProcessor) GetRequestCh() chan IRequestContext {
+	return p.reqCh
+}
+
 func NewOutboundProcessor(connInfo string, config *OutboundConfig, enableBounce bool) *OutboundProcessor {
 	return NewOutbProcessor(ServiceEndpoint{Addr: connInfo}, config, enableBounce)
 }

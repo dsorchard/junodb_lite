@@ -29,3 +29,10 @@ type RingBuffer struct {
 func (rb *RingBuffer) CleanAll() {
 
 }
+
+type QueItemBase struct {
+	id       uint32
+	flag     uint32
+	timeout  time.Duration
+	deadline time.Time
+}
