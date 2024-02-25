@@ -236,3 +236,27 @@ func (cr *Reader) readNodesShards(c *cluster.Cluster, tag string, offset int) (e
 
 	return nil
 }
+
+func (cr *Reader) ReadRedistChangeMap(zone int, node int) (changeMap map[uint16]uint16, err error) {
+	// outgoing shards
+	key := KeyRedistFromNode(zone, node)
+	glog.Infof("Getting redist change map: %s", key)
+	value, err := cr.etcdcli.GetValue(key)
+	if err != nil {
+		return
+	}
+
+	changeInfo := strings.Split(value, TagRedistShardMoveSeparator)
+	changeMap = make(map[uint16]uint16)
+	for _, change_str := range changeInfo {
+		change := strings.Split(change_str, TagCompDelimiter)
+		if len(change) < 2 {
+			return nil, errors.New("bad cluster info")
+		}
+		shardid, _ := strconv.Atoi(change[0])
+		nodeid, _ := strconv.Atoi(change[1])
+		changeMap[uint16(shardid)] = uint16(nodeid)
+	}
+
+	return
+}

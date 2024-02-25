@@ -1,6 +1,10 @@
 package etcd
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 type IKVWriter interface {
 	PutValue(key string, value string) (err error)
@@ -66,4 +70,22 @@ func (w *StdoutWriter) PutValuesWithTxn(op OpList) (err error) {
 	fmt.Printf("===txn end\n")
 
 	return nil
+}
+
+func ParseRedistRateLimit(value string) (ratelimit int) {
+	ratelimit = 0 // default
+
+	pairs := strings.Split(value, TagFieldSeparator)
+	if len(pairs) < 2 { // no ratelimit
+		return
+	}
+
+	v := strings.Split(pairs[1], TagKeyValueSeparator)
+	if strings.Compare(v[0], string(TagRedistRateLimit)) == 0 {
+		limit, err := strconv.Atoi(v[1])
+		if err == nil {
+			ratelimit = limit
+		}
+	}
+	return
 }

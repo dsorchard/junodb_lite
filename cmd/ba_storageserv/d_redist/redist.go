@@ -6,6 +6,7 @@ import (
 	shard "junodb_lite/pkg/b_shard"
 	etcd "junodb_lite/pkg/c_etcd"
 	"sync"
+	"sync/atomic"
 )
 
 type IDBRedistHandler interface {
@@ -36,4 +37,18 @@ func Init(clustername string, zoneid uint16, nodeid uint16, cfg *etcd.Config) (e
 		return errors.New("failed to connect to etcd")
 	}
 	return nil
+}
+
+func SetManager(mgr *Manager) {
+	theLock.Lock()
+	theManager = mgr
+	defer theLock.Unlock()
+}
+func SetEnable(flag bool) {
+	glog.Infof("RedistEnabled: %v", flag)
+	var value int32 = 0
+	if flag {
+		value = 1
+	}
+	atomic.StoreInt32(&enabled, value)
 }

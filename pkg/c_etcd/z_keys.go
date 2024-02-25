@@ -90,3 +90,10 @@ func KeyRedistFromNodeByZone(zone int) string {
 func KeyRedistNodeState(zone int, node int, shardid int) string {
 	return Key(TagRedistStatePrefix, zone, node, shardid)
 }
+func KeyRedistFromNode(zone int, node int) string {
+	return Key(TagRedistFromNode, zone, node)
+}
+
+func KeyRedistTgtNodeState(zone int, node int) string {
+	return Key(TagRedistTgtStatePrefix, zone, node)
+}
