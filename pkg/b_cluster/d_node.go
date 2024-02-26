@@ -73,3 +73,62 @@ func (n *Node) GetShards() (shards []uint32) {
 	copy(shards[len(n.PrimaryShards):], n.SecondaryShards)
 	return
 }
+func (n *Node) primaryLength() int {
+	return len(n.PrimaryShards)
+}
+
+// remove i-th entry from primary
+// Return the shardid
+func (n *Node) deleteFromPrimary(filter *Filter, target Node) uint32 {
+	var i int
+
+	if filter == nil {
+		i = 0
+	} else {
+		i = filter.selectShardForMove(n.PrimaryShards, target)
+	}
+
+	last := n.primaryLength() - 1
+	if IsNewMappingAlg() {
+		i = last
+	}
+	shardid := n.PrimaryShards[i]
+
+	n.PrimaryShards[i] = n.PrimaryShards[last]
+	n.PrimaryShards = n.PrimaryShards[:last]
+
+	return shardid
+}
+
+// add one to tail
+func (n *Node) appendToPrimary(shardid uint32) {
+	n.PrimaryShards = append(n.PrimaryShards, shardid)
+}
+
+func (n *Node) secondaryLength() int {
+	return len(n.SecondaryShards)
+}
+
+// remove i-th entry from secondary
+// Return the shardid
+func (n *Node) deleteFromSecondary(filter *Filter, target Node) uint32 {
+	var i int
+
+	if filter == nil {
+		i = 0
+	} else {
+		i = filter.selectShardForMove(n.SecondaryShards, target)
+	}
+	shardid := n.SecondaryShards[i]
+	last := n.secondaryLength() - 1
+
+	n.SecondaryShards[i] = n.SecondaryShards[last]
+	n.SecondaryShards = n.SecondaryShards[:last]
+
+	return shardid
+}
+
+// add one to tail
+func (n *Node) appendToSecondary(shardid uint32) {
+	n.SecondaryShards = append(n.SecondaryShards, shardid)
+}
